@@ -1,0 +1,7 @@
+__pycache__
+*.pyc
+.vscode/
+foxmock.egg-info/
+build/
+dist/
+.venv/
