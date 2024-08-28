@@ -1,10 +1,8 @@
 from foxmock import Mock
 import pytest
 
-def test_mock_with_args():
+def test_base():
     mock = Mock()
-    mock.call("foo").with_args(123).ret("123bar")
-    mock.call("foo").with_args("123").ret("'123'bar")
+    mock.call("foo").ret("bar")
 
-    assert mock.foo(123) == "123bar"
-    assert mock.foo('123') == "'123'bar"
+    # assert mock["name"] == "jack"

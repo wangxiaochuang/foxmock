@@ -61,41 +61,38 @@ class Runner(Method):
             return resp.get_resp()
         raise RuntimeError("No response for call")
 
-class Indexer():
-    def __init__(self, name: str) -> None:
-        self.name = name
-        self.return_value = None
-
-    def ret(self, val):
-        self.return_value = val
-
-class Index(Indexer):
-    def __getitem__(self, name):
-        if name != self.name:
-            raise KeyError(name)
-        return self.return_value
-    
-    __getattr__ = __getitem__
-    
-
 class Mock():
     def __init__(self):
-        self.runners = {}
-    def call(self, name: str):
-        runner = self.runners.get(name)
+        self.__runners = {}
+        self.__indexers = {}
+    
+    def __get_or_create_runner(self, name):
+        runner = self.__runners.get(name)
         if not runner:
             runner = Runner(name)
-            self.runners[name] = runner
+            self.__runners[name] = runner
+        return runner
+        
+    def call(self, name: str):
+        runner = self.__get_or_create_runner(name)
         setattr(self, name, runner)
         return runner
 
+    def __get_or_create_indexer(self, name):
+        indexer = self.__indexers.get(name)
+        if not indexer:
+            indexer = Resp()
+            self.__indexers[name] = indexer
+        return indexer
+
     def index(self, name):
-        indexer = Index(name)
-        setattr(self, "_indexer", indexer)
+        indexer = self.__get_or_create_indexer(name)
         return indexer
 
 
     def __getitem__(self, name):
-        return self._indexer[name]
+        if indexer := self.__indexers.get(name):
+            return indexer.get_resp()
+        raise RuntimeError("No response for call")
     
     __getattr__ = __getitem__
