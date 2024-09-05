@@ -32,6 +32,8 @@ def test_except():
         assert mock.foo("xxx") == "xxxxx"
     except RuntimeError:
         pass
+    mock.call("foo").with_any_args().ret("jar")
+    assert mock.foo("xxx") == "jar"
 
 
 def test_mock_with_args():

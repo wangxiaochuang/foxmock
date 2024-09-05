@@ -19,7 +19,7 @@ URL = 'https://github.com/wangxiaochuang/foxmock'
 EMAIL = 'jackstrawxiaoxin@gmail.com'
 AUTHOR = 'wangxiaochuang'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = '0.1.4'
+VERSION = '0.1.5'
 
 # What packages are required for this module to be executed?
 REQUIRED = []

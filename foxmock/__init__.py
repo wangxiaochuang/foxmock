@@ -34,6 +34,7 @@ class Method():
     def __init__(self, name: str) -> None:
         self.name = name
         self.reqs = {}
+        self.use_any_args = False
 
     def ret(self, val):
         resp = Resp()
@@ -49,6 +50,10 @@ class Method():
         
     def with_args(self, *args, **kwargs) -> Resp:
         return self.get_resp_or_create(Key(args, kwargs))
+
+    def with_any_args(self, *args, **kwargs) -> Resp:
+        self.use_any_args = True
+        return self.get_resp_or_create("__ANY_ARGS__")
 
 class CallArg():
     def __init__(self, func, args, kwargs):
@@ -67,7 +72,10 @@ class Runner(Method):
 
     def __call__(self, *args, **kwargs):
         self.history.append(CallArg(self.name, args, kwargs))
-        if resp := self.reqs.get(Key(args, kwargs)):
+        key = Key(args, kwargs)
+        if self.use_any_args:
+            key = "__ANY_ARGS__"
+        if resp := self.reqs.get(key):
             return resp.get_resp()
         raise RuntimeError(f"not mock for method: {self.name}({args}, {kwargs})")
 
